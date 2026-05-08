@@ -342,13 +342,7 @@ main (int argc, char *argv[])
 	viewflag = 0;
 
       if (hit3flag)
-#if defined WINDOWS_VS
-lflushall();
-#endif
-
-#if defined NIX
-fflush(NULL);
-#endif 
+          lflushall();
       hitflag = hit3flag = 0;
       bot_linex ();		/* update bottom line */
 
@@ -358,13 +352,7 @@ fflush(NULL);
       while (nomove)
 	{
 	  if (hit3flag)
-#if defined WINDOWS_VS
-lflushall();
-#endif
-
-#if defined NIX
-fflush(NULL);
-#endif 
+              lflushall();
 	  nomove = 0;
 	  parse ();
 	}

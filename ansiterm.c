@@ -44,7 +44,7 @@ ansiterm_out (const char *output_buffer, int n_chars)
 
 	  j = 0;
 
-	  while (!isalpha (output_buffer[i]))
+	  while (!isalpha ((unsigned char)output_buffer[i]))
 	    {
 
 	      ansi_param[j] = output_buffer[i];
@@ -156,6 +156,18 @@ ansiterm_getch (void)
   return llgetch ();
 }
 
+void 
+ansiterm_flush_input(void)
+{
+  flushinp();
+}
+
+void 
+ansiterm_show_cursor(int visible)
+{
+  curs_set(visible);
+}
+
 /*
 * get char (with echo)
 */
@@ -211,7 +223,7 @@ llgetch (void)
       return 'h';
     case KEY_RIGHT:
       return 'l';
-#ifdef WINDOWS_VS
+#if defined(WINDOWS_VS) || defined(HP165X)
     case KEY_A2:
       return 'k';
     case KEY_B1:

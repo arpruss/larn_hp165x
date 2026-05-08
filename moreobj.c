@@ -35,6 +35,7 @@ pray_at_altar()
 #include "includes/object.h"
 #include "includes/spells.h"
 #include "includes/store.h"
+#include "includes/ansiterm.h"
 
 static void fch (int, long *);
 static void specify_obj_nocurs (void);
@@ -784,6 +785,7 @@ specify_obj_cursor (void)
   objx = playerx;
   objy = playery;
   cursor (objx + 1, objy + 1);
+  ansiterm_show_cursor(1);
   /* make cursor visible.
    */
   for (;;)
@@ -805,12 +807,14 @@ specify_obj_cursor (void)
 	  /* reset cursor
 	   */
 	  cursor (playerx + 1, playery + 1);
+          ansiterm_show_cursor(0);
 	  return;
 	case '.':
 	  /* reset cursor
 	   */
 	  cursor (playerx + 1, playery + 1);
 	  cursors ();
+          ansiterm_show_cursor(0);
 
 	  if ((objx == playerx) && (objy == playery))
 	    {

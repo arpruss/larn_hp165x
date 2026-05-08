@@ -74,7 +74,7 @@
 #if defined NIX
 #include <sys/ioctl.h>
 #include <unistd.h>
-#ifndef FIONREAD
+#if !defined(HP165X) && !defined(FIONREAD)
 #include <sys/socket.h>
 #endif
 #endif
@@ -179,6 +179,7 @@ scbr (void)
    * read from the keypad;
    */
   getchfn = ansiterm_getch;
+  ansiterm_show_cursor(0);
 }
 
 
@@ -196,9 +197,13 @@ sncbr (void)
    * Set up to use the direct console input call with echo, getche()
    */
   getchfn = ansiterm_getche;
+  ansiterm_show_cursor(1);
 }
 
 
+#ifdef HP165X
+unsigned int getSeed32(void);
+#endif
 
 /*
 * newgame()       Subroutine to save the initial time and seed rnd()
@@ -213,7 +218,11 @@ newgame (void)
 
   time (&initialtime);
 
+#ifdef HP165X
+  srand (getSeed32());
+#else  
   srand ((unsigned)initialtime);
+#endif
 
   lcreat ((char *) 0);		/* open buffering for output to terminal */
 }
@@ -302,7 +311,6 @@ lprc (char ch)
 
       lflush ();
     }
-    lflush();
 }
 
 
@@ -1050,29 +1058,13 @@ flush_buf (void)
 /*
 *  flushall()  Function to flush all type-ahead in the input buffer
 *  
-*  I've fixed this mess.  I don't know who implemented this
-*  but kbhit is Windows only.  I'm guessing they never
-*  used a BSD or GNU/Linux system or never read a manpage.
-*  
-*  I prefer declaring each individually as it is safer
-*  and also prevent them from being compiled
-*  when not used by the systems defs.
-*
-*  Nowadays we can do a fflush(NULL) on Unix-like systems.
-*
-*  ~Gibbon
 */
 
-#if defined WINDOWS_VS
 void
 lflushall (void)
 {
-  while (_kbhit())
-    {
-      _getch();
-    }
+    ansiterm_flush_input();
 }
-#endif
 
 
 /*
@@ -1105,7 +1097,7 @@ tmcapcnv (char *sd, char *ss)
 	  tmstate++;
 	  break;
 	case 2:
-	  if (isdigit (*ss))
+	  if (isdigit ((unsigned char)*ss))
 	    {
 	      tmdigit = *ss - '0';
 	      tmstate++;
