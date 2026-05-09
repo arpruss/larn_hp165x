@@ -186,9 +186,14 @@ llgetch (void)
 {
   int key;
   key = wgetch(stdscr);
+#if defined(WINDOWS_VS) || defined(HP165X)  
+  int shift = PDC_get_key_modifiers () & PDC_KEY_MODIFIER_SHIFT;
+#else
+  int shift = 0;
+#endif
 
 #ifdef WINDOWS_VS
-  if (PDC_get_key_modifiers () & PDC_KEY_MODIFIER_SHIFT)
+  if (shift)
     {
       switch (key)
 	{
@@ -216,33 +221,33 @@ llgetch (void)
   switch (key)
     {
     case KEY_UP:
-      return 'k';
+      return shift?'K':'k';
     case KEY_DOWN:
-      return 'j';
+      return shift?'J':'j';
     case KEY_LEFT:
-      return 'h';
+      return shift?'H':'h';
     case KEY_RIGHT:
-      return 'l';
+      return shift?'L':'l';
 #if defined(WINDOWS_VS) || defined(HP165X)
     case KEY_A2:
-      return 'k';
+      return shift?'K':'k';
     case KEY_B1:
-      return 'h';
+      return shift?'H':'h';
     case KEY_B3:
-      return 'l';
+      return shift?'L':'l';
     case KEY_C2:
-      return 'j';
+      return shift?'J':'j';
     case PADENTER:
       return 13;
 #endif
     case KEY_A1:
-      return 'y';
+      return shift?'Y':'y';
     case KEY_A3:
-      return 'u';
+      return shift?'U':'u';
     case KEY_C1:
-      return 'b';
+      return shift?'B':'b';
     case KEY_C3:
-      return 'n';
+      return shift?'N':'n';
     case KEY_B2:
       return '.';
     case KEY_ENTER:
