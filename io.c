@@ -89,8 +89,8 @@
 #define LINBUFSIZE 128		/* size of the lgetw() and lgetl() buffer       */
 int lfd;			/*  output file numbers     */
 int fd;				/*  input file numbers      */
-static int curx = 1;
-static int cury = 1;
+static int curx = 0;
+static int cury = 0;
 
 
 
@@ -314,9 +314,9 @@ lprc (char ch)
         scrline = 19;
           }
           
-        move(scrline+1-1, 0);
+        move(scrline+1, 0);
         clrtoeol();
-        move(scrline-1, 0);
+        move(scrline, 0);
         clrtoeol();
        }
        else if (ch=='\t')
@@ -728,11 +728,11 @@ lprcat (char *str)
 void
 cursor (int x, int y)
 {
-  if (x != playerx + 1 || y != playery + 1)
+  curx = x-1;
+  cury = y-1;
+  if (curx != playerx || cury != playery)
     ansiterm_show_cursor(0);
-  curx = x;
-  cury = y;
-  move(y-1, x-1);
+  move(cury, curx);
 }
 
 /*
@@ -742,7 +742,7 @@ void
 cursors (void)
 {
   ansiterm_show_cursor(0);
-  cursor(1, 23);
+  cursor(1, 24);
 }
 
 /*

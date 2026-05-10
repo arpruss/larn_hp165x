@@ -48,7 +48,7 @@
 #define resetscroll() enable_scroll=0
 
 /* macro to clear the screen and home the cursor */
-#define screen_clear() clear()
+#define screen_clear() do { clear(); cursor(1,1); } while(0)
 
 /* macro to clear to end of line */
 #define cltoeoln() clrtoeol()
