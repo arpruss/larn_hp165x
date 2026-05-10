@@ -857,7 +857,7 @@ diedsub (int x)
 {
   char ch, *mod;
 
-  lprintf ("Score: %ld, Diff: %ld,  %s ", cdesc[GOLD], cdesc[HARDGAME],
+  lprintf ("\nScore: %ld, Diff: %ld,  %s ", cdesc[GOLD], cdesc[HARDGAME],
 	   logname);
 
   if (x < 256)

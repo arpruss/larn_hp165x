@@ -799,6 +799,7 @@ specify_obj_cursor (void)
 	  lprcat ("\nType a . when the cursor is at the desired place.");
 	  lprcat ("\nType q, Return, or Escape to exit.");
 	  cursor (objx + 1, objy + 1);
+      ansiterm_show_cursor(1);
 	  break;
 
 	case '\33':
@@ -807,14 +808,14 @@ specify_obj_cursor (void)
 	  /* reset cursor
 	   */
 	  cursor (playerx + 1, playery + 1);
-          ansiterm_show_cursor(0);
+      ansiterm_show_cursor(1);
 	  return;
 	case '.':
 	  /* reset cursor
 	   */
 	  cursor (playerx + 1, playery + 1);
 	  cursors ();
-          ansiterm_show_cursor(0);
+      ansiterm_show_cursor(0);
 
 	  if ((objx == playerx) && (objy == playery))
 	    {
@@ -912,4 +913,5 @@ move_cursor (int *xx, int *yy, int cdir)
     *xx = 0;
 
   cursor (*xx + 1, *yy + 1);
+  ansiterm_show_cursor(1);
 }

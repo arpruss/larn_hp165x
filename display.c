@@ -680,6 +680,7 @@ showplayer(void)
 {
     show1cell(oldx, oldy);
     cursor(playerx + 1, playery + 1);
+    ansiterm_show_cursor(1);
     attron(COLOR_PAIR(1));
     lprc('@');
     attroff(COLOR_PAIR(1));

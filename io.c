@@ -218,9 +218,9 @@ newgame (void)
 
   time (&initialtime);
 
-#ifdef HP165X
-  srand (getSeed32());
-#else  
+#ifdef GET_SEED
+  srand (GET_SEED);
+#else
   srand ((unsigned)initialtime);
 #endif
 
@@ -706,6 +706,8 @@ lprcat (char *str)
 void
 cursor (int x, int y)
 {
+  if (x != playerx + 1 || y != playery + 1)
+    ansiterm_show_cursor(0);
   if (lpnt >= lpend)
     {
       lflush();
@@ -721,6 +723,7 @@ cursor (int x, int y)
 void
 cursors (void)
 {
+  ansiterm_show_cursor(0);
   cursor(1, 24);
 }
 
