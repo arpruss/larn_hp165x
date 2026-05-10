@@ -6,6 +6,8 @@
 *
 */
 
+#include <curses.h>
+
 /* macro to create scroll #'s with probability of occurrence */
 #define newscroll() (scprob[rund(81)])
 
@@ -46,10 +48,10 @@
 #define resetscroll() enable_scroll=0
 
 /* macro to clear the screen and home the cursor */
-#define screen_clear() (*lpnt++ =CLEAR, regen_bottom=TRUE)
+#define screen_clear() clear()
 
 /* macro to clear to end of line */
-#define cltoeoln() (*lpnt++ = CL_LINE)
+#define cltoeoln() clrtoeol()
 
 /* macros to seed the random number generator */
 /* This is needed on Windows which throws an error due to 'random' not being defined on MingW.  I'll clean it up later. -Gibbon */
