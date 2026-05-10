@@ -877,11 +877,7 @@ static int io_index = 0;
 static void
 flush_buf (void)
 {
-      if (lfd == 1)
-	{
-	  ansiterm_out (outbuf, io_index);
-	}
-      else
+      if (lfd != 1)
 	{
 #if defined WINDOWS_VS
 		_write(lfd, outbuf, io_index);
