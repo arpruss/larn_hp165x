@@ -218,11 +218,7 @@ newgame (void)
 
   time (&initialtime);
 
-#ifdef GET_SEED
-  srand (GET_SEED);
-#else
   srand ((unsigned)initialtime);
-#endif
 
   lcreat ((char *) 0);		/* open buffering for output to terminal */
 }
