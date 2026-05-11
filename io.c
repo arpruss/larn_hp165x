@@ -47,7 +47,6 @@
 ** ttputch(ch)     Print one character in decoded output buffer.
 ** flush_buf()     Flush buffer with decoded output.
 ** init_term()     Terminal initialization
-** char *tmcapcnv(sd,ss)   Routine to convert VT100 \33's to termcap format
 *
 * Note: ** entries are available only in termcap mode.
 */
