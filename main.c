@@ -220,10 +220,10 @@ main (int argc, char *argv[])
 #if defined WINDOWS_VS
 		  MessageBox(NULL, L"-s = Show scores\n-i = Show all scores (including inventory at time of death)\n-0 to -9 = Difficulty setting\n-h or -? = This help text", L"HELP TEXT", MB_OK);
 #else
-	    ansiterm_clean_up ();
-	    puts (cmdhelp);
+	    lprcat(cmdhelp);
 		lprcat("Press any key to exit...");
 		ttgetch();
+	    ansiterm_clean_up ();
 #endif
 		exit (EXIT_SUCCESS);
 	  default:
@@ -302,6 +302,21 @@ main (int argc, char *argv[])
    */
   for (;;)
     {
+	  /* water animation every 3 tics (player moves) */
+	  long now = time(NULL);
+	  if (now - last_water_anim >= 3)
+	  {
+		  last_water_anim = now;
+		  water_anim_toggle = !water_anim_toggle;
+
+		  /* redraw only puddles for performance reasons (low cpu usage) */
+		  for (int yy = 0; yy < MAXY; yy++)
+			  for (int xx = 0; xx < MAXX; xx++)
+				  if (item[xx][yy] == OPUDDLE)
+					  show1cell(xx, yy);
+
+		  refresh();
+	  }
       if (dropflag == 0)
 	{
 	  /* see if there is an object here.
@@ -341,8 +356,8 @@ main (int argc, char *argv[])
       else
 	viewflag = 0;
 
-      if (hit3flag)
-          lflushall();
+	  if (hit3flag)
+		  flushinp();
       hitflag = hit3flag = 0;
       bot_linex ();		/* update bottom line */
 
@@ -352,7 +367,7 @@ main (int argc, char *argv[])
       while (nomove)
 	{
 	  if (hit3flag)
-              lflushall();
+		  flushinp();
 	  nomove = 0;
 	  parse ();
 	}
