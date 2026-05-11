@@ -1,12 +1,10 @@
-
+#include <curses.h>
 
 /*
 *
 * macros
 *
 */
-
-#include <curses.h>
 
 /* macro to create scroll #'s with probability of occurrence */
 #define newscroll() (scprob[rund(81)])
@@ -36,10 +34,10 @@
 #define disappear(x,y) (mitem[x][y]=know[x][y]=0)
 
 /* macro to turn on bold display for the terminal */
-#define setbold() standout()
+#define setbold() attron(A_REVERSE)
 
 /* macro to turn off bold display for the terminal */
-#define resetbold() standend()
+#define resetbold() attroff(A_REVERSE)
 
 /* macro to setup the scrolling region for the terminal */
 #define setscroll() enable_scroll=1

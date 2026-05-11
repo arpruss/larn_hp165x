@@ -58,8 +58,8 @@
 #include <curses.h>
 
 #if defined WINDOWS_VS
+#define _INC_CONIO
 #include <io.h>
-#include <conio.h>
 #endif
 
 #include <sys/stat.h>
@@ -74,9 +74,6 @@
 #if defined NIX
 #include <sys/ioctl.h>
 #include <unistd.h>
-#if !defined(HP165X) && !defined(FIONREAD)
-#include <sys/socket.h>
-#endif
 #endif
 #include "includes/display.h"
 #include "includes/global.h"
@@ -86,7 +83,7 @@
 #include "includes/tgoto.h"
 
 #define LINBUFSIZE 128		/* size of the lgetw() and lgetl() buffer       */
-int lfd;			/*  output file numbers     */
+int lfd = 0;		/*  output file numbers     */
 int fd;				/*  input file numbers      */
 static int curx = 0;
 static int cury = 0;
@@ -179,7 +176,7 @@ scbr (void)
    * read from the keypad;
    */
   getchfn = ansiterm_getch;
-  ansiterm_show_cursor(0);
+  curs_set(0);
 }
 
 
@@ -197,7 +194,7 @@ sncbr (void)
    * Set up to use the direct console input call with echo, getche()
    */
   getchfn = ansiterm_getche;
-  ansiterm_show_cursor(1);
+  curs_set(1);
 }
 
 
@@ -296,7 +293,7 @@ static int scrline = 18;	/* line # for wraparound instead of scrolling if no DL 
 void
 lprc (char ch)
 {
-    if (lfd != 1) {
+    if (lfd > 2) {
       *lpnt++ = ch;
 
       if (lpnt >= lpend)
@@ -322,6 +319,9 @@ lprc (char ch)
            addstr("    ");
        else
            addch(ch);
+#ifdef EXTRA
+       cdesc[BYTESOUT]++;
+#endif
     }
 }
 
@@ -698,7 +698,7 @@ lwclose (void)
 void
 lprcat (char *str)
 {
-    if (lfd != 1) {
+    if (lfd > 2) {
       char *str2;
       
       if (lpnt >= lpend)
@@ -729,8 +729,6 @@ cursor (int x, int y)
 {
   curx = x-1;
   cury = y-1;
-  if (curx != playerx || cury != playery)
-    ansiterm_show_cursor(0);
   move(cury, curx);
 }
 
@@ -740,7 +738,7 @@ cursor (int x, int y)
 void
 cursors (void)
 {
-  ansiterm_show_cursor(0);
+  curs_set(0);
   cursor(1, 24);
 }
 
@@ -815,9 +813,9 @@ cl_dn (int x, int y)
 void
 lstandout (char *str)
 {
-    standout();
+    attron(A_REVERSE);
     lprcat(str);
-    standend();
+    attroff(A_REVERSE);
 }
 
 /*
@@ -842,9 +840,12 @@ void
 lflush (void)
 {
     int lpoint;
-      if (lfd != 1 /*enable_scroll <= -1*/)
+      if (lfd > 2)
 	{
         if ((lpoint = lpnt - lpbuf) > 0) {
+#ifdef EXTRA
+        cdesc[BYTESOUT] += lpoint;
+#endif
 #if defined WINDOWS_VS
             if (_write(lfd, lpbuf, lpoint) != lpoint)
 #endif
@@ -876,7 +877,7 @@ static int io_index = 0;
 static void
 flush_buf (void)
 {
-      if (lfd != 1)
+      if (lfd > 2)
 	{
 #if defined WINDOWS_VS
 		_write(lfd, outbuf, io_index);
@@ -940,4 +941,13 @@ enter_name (void)
   logname[i] = '\0';
 
   scbr ();
+}
+
+void
+cursor_block(void)
+{
+    curs_set(0);
+    attron(A_REVERSE);
+    addch(' ');
+    attroff(A_REVERSE);
 }
