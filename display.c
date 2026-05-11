@@ -678,12 +678,10 @@ cursor values start from 1 up
 void
 showplayer(void)
 {
+    curs_set(0);
     show1cell(oldx, oldy);
     cursor(playerx + 1, playery + 1);
-    ansiterm_show_cursor(1);
-    attron(COLOR_PAIR(1));
-    lprc('@');
-    attroff(COLOR_PAIR(1));
+    cursor_block();
     cursor(playerx + 1, playery + 1);
     oldx = playerx;
     oldy = playery;

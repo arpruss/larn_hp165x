@@ -61,3 +61,5 @@ void lflushall (void);
 char *tmcapcnv (char *, char *);
 
 void enter_name (void);
+
+void cursor_block (void);
